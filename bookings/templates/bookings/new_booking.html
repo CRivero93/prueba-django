@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Fecha y habitación{% endblock %}
+{% block content %}
+    <h1>Fecha y habitación de la reserva</h1>
+    
+    {% if message %}
+        <h3 class="red">{{message}}</h3>
+    {% endif %}
+
+    <form action="." method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Buscar">
+    </form>
+
+    {% if rooms %}
+        <form action="{% url 'bookings:booking-contact' %}" method="POST">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>HABITACION</th>
+                        <th>DISPONIBLES</th>
+                        <th>PRECIO TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>  
+                    {% for room in rooms %}
+                        <tr>
+                            <td><input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ room.id }}" required></td>
+                            <td>{{room.room_type}}</td>
+                            <td>{{room.total_available}}</td>
+                            <td>{{room.price}}</td> 
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="submit" value="Siguiente">
+        </form>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Contacto{% endblock %}
+
+{% block content %}
+<h1>Información de contacto</h1>
+<form action="." method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Confirmar">
+</form>
+
+{% endblock %}
+
+
+

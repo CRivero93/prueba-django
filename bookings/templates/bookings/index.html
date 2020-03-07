@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Reservas</h1>
+    {% if booking_list %}
+    <table>
+        <thead>
+            <tr>
+                <th>LOCALIZADOR</th>
+                <th>FECHA ENTRADA</th>
+                <th>FECHA SALIDA</th>
+                <th>HABITACION</th>
+                <th>Nº HUESPEDES</th>
+                <th>PRECIO</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for booking in booking_list %}
+            <tr>
+                <td>{{booking.locator}}</td>
+                <td>{{booking.entry_date}}</td>
+                <td>{{booking.departure_date}}</td>
+                <td>{{booking.room_type}}</td>
+                <td>{{booking.number_guests}}</td>
+                <td>{{booking.total_price}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <h3>No bookings are active.</h3>
+    {% endif %}
+    <a href="{% url 'bookings:new-booking'%}"><button>New Booking</button></a>
+{% endblock %}
+
