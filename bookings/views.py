@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Booking, RoomType, Guest
 from .forms import NewBookingForm, ContactForm
 from django.views import View
@@ -8,8 +8,12 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseRedirect
 from .constants import select_dates, no_rooms_available
 import json
+from django.db.models import Q
 
 # Create your views here.
+
+def index_view(request):
+    return redirect('/bookings/')
 
 class BookingsView(View):
     template_name = "bookings/index.html"
@@ -47,9 +51,10 @@ class NewBookingView(View):
         filtered_rooms = []
         rooms = RoomType.objects.filter(capacity__gte=datas.get("number_guests"))
         for room in rooms:
-            room_bookings = room.bookings.filter(entry_date=datas.get("entry_date"), 
-                                                   departure_date=datas.get("departure_date")).count()
-            if room_bookings == room.total_rooms:
+            room_bookings = room.bookings.filter(Q(entry_date__range=(datas.get("entry_date"), datas.get("departure_date"))) |  
+                                                Q(departure_date__range=(datas.get("entry_date"), datas.get("departure_date")))).count()
+
+            if room_bookings >= room.total_rooms:
                 continue
             room.total_available = room.total_rooms - room_bookings
             room.price *= diff_dates(datas.get("entry_date"), datas.get("departure_date"))
